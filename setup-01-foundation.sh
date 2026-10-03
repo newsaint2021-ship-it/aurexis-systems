@@ -2,7 +2,8 @@
 set -euo pipefail
 echo "==> Writing Aurexis foundation layer..."
 
-# ─── TAILWIND CONFIG ──────────────────────────────────────────────────────────
+mkdir -p src/app src/lib src/styles
+
 cat > tailwind.config.ts << 'EOF'
 import type { Config } from 'tailwindcss'
 
@@ -32,7 +33,6 @@ const config: Config = {
 export default config
 EOF
 
-# ─── ROOT CONFIG FILES ────────────────────────────────────────────────────────
 cat > .env.example << 'EOF'
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 EOF
@@ -47,10 +47,6 @@ cat > .prettierrc << 'EOF'
 }
 EOF
 
-# ─── MAKE REQUIRED DIRECTORIES ────────────────────────────────────────────────
-mkdir -p src/lib src/styles
-
-# ─── LIB: UTILS ───────────────────────────────────────────────────────────────
 cat > src/lib/utils.ts << 'EOF'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
@@ -60,7 +56,6 @@ export function cn(...inputs: ClassValue[]) {
 }
 EOF
 
-# ─── STYLES: FONTS ────────────────────────────────────────────────────────────
 cat > src/styles/fonts.ts << 'EOF'
 import { Inter, JetBrains_Mono } from 'next/font/google'
 
@@ -77,7 +72,6 @@ export const mono = JetBrains_Mono({
 })
 EOF
 
-# ─── LIB: SEO ─────────────────────────────────────────────────────────────────
 cat > src/lib/seo.ts << 'EOF'
 import type { Metadata } from 'next'
 
@@ -105,7 +99,6 @@ export function buildMetadata(overrides: Partial<Metadata> = {}): Metadata {
 }
 EOF
 
-# ─── GLOBAL CSS ───────────────────────────────────────────────────────────────
 cat > src/app/globals.css << 'EOF'
 @tailwind base;
 @tailwind components;
@@ -144,7 +137,6 @@ html, body {
 }
 EOF
 
-# ─── PROVIDERS ────────────────────────────────────────────────────────────────
 cat > src/app/providers.tsx << 'EOF'
 'use client'
 
@@ -160,7 +152,6 @@ export function Providers({ children }: { children: ReactNode }) {
 }
 EOF
 
-# ─── LAYOUT ───────────────────────────────────────────────────────────────────
 cat > src/app/layout.tsx << 'EOF'
 import type { Metadata, Viewport } from 'next'
 import { sans, mono } from '@/styles/fonts'
@@ -196,7 +187,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 EOF
 
-# ─── HOMEPAGE STUB ────────────────────────────────────────────────────────────
 cat > src/app/page.tsx << 'EOF'
 export default function Home() {
   return (
@@ -224,7 +214,6 @@ export default function Home() {
 }
 EOF
 
-# ─── CLEANUP BOILERPLATE ASSETS ───────────────────────────────────────────────
 rm -f public/next.svg public/vercel.svg 2>/dev/null || true
 
 echo ""
@@ -233,4 +222,4 @@ find src tailwind.config.ts .prettierrc .env.example -type f | sort
 echo ""
 echo "==> Total files: $(find src -type f | wc -l)"
 echo ""
-echo "==> Next: commit this, then run 'npm run dev' and open port 3000."
+echo "==> Next: run setup-02-state.sh"
